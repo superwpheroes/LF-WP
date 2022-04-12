@@ -1,16 +1,16 @@
 <?php
 define('WP_CACHE', true );
-define('DB_NAME', 'lifeframer_staging');
+define('DB_NAME', getenv('DB_NAME'));
 /** MySQL database username */
-define('DB_USER', 'staging');
+define('DB_USER', getenv('DB_USER'));
 /** MySQL database password */
-define('DB_PASSWORD', '7b10f099c0d3000acd');
+define('DB_PASSWORD', getenv('DB_PASSWORD'));
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', getenv('DB_HOST'));
 /** Database Charset to use in creating database tables. */
-define('DB_CHARSET', 'utf8');
+define('DB_CHARSET', getenv('DB_CHARSET'));
 /** The Database Collate type. Don't change this if in doubt. */
-define('DB_COLLATE', '');
+define('DB_COLLATE', getenv('DB_COLLATE'));
 /**#@+
  * Authentication Unique Keys and Salts.
  *
@@ -20,14 +20,14 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         'G!:<AD:Xv1yw?9H!g&y@-^5b8h3Xy3m{m0t)F`.Ca*!>A&8!vmABBfBwDU}r(Z<|');
-define('SECURE_AUTH_KEY',  'NH<{nA@HK>9,*b[D`*w&C_f|@T_NT.tc0GyGsH-p |5ZT6guvwds:-V-<rdI~Gb!');
-define('LOGGED_IN_KEY',    '|Yo>x)|C~DW&]jxx BLs$IXX9bLn?z |YA-+OjC89{T|/?Z<i*53m500(?>Wkyd0');
-define('NONCE_KEY',        '#%62UC)81~ }Gx~M)5Nn{VWTCS[.>E-^qXiQ ?)>U_ZAC^z!%,f-W+lE_oc4+#SP');
-define('AUTH_SALT',        ',egA;{F(84*PN8@j|vqw[a9>VZwjYY^)~Zd>hh@ZE(lfRwH3:%~Um!t[d>|ZB$!h');
-define('SECURE_AUTH_SALT', ')>G{<p-;-;JM|q?$;qZvH{9%iS[BOLj72OKve-%Q]iSSj<#-$q8Gk<^xh1+!~-k1');
-define('LOGGED_IN_SALT',   '5QoDg#j|o-$&Kof<2SYhV<|huBO!ej.e%US&{pC=5hV`?imz{yFR~m6j);`AfSrO');
-define('NONCE_SALT',       '~=Ly@:9A|g}q]vuHT-{YIm}J WIGmra{0`jP;)DtR,D(|]U@>?<Zi-g<1XQ2RvS}');
+define('AUTH_KEY',         getenv('AUTH_KEY'));
+define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
+define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY'));
+define('NONCE_KEY',        getenv('NONCE_KEY'));
+define('AUTH_SALT',        getenv('AUTH_SALT'));
+define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
+define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT'));
+define('NONCE_SALT',       getenv('NONCE_SALT'));
 /**#@-*/
 /**
  * WordPress Database Table prefix.
@@ -35,7 +35,7 @@ define('NONCE_SALT',       '~=Ly@:9A|g}q]vuHT-{YIm}J WIGmra{0`jP;)DtR,D(|]U@>?<Z
  * You can have multiple installations in one database if you give each a unique
  * prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix  = 'wrd_';
+$table_prefix  = getenv('TABLE_PREFIX');
 /**
  * WordPress Localized Language, defaults to English.
  *
