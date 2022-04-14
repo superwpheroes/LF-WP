@@ -23,6 +23,29 @@ require_once get_stylesheet_directory().'/includes/lf-entry-series-award.php';
 require_once get_stylesheet_directory().'/includes/class-avada-nav-walker-megamenu.php';
 
 
+add_action( 'pre_get_users', function($wpq) {
+    if ( isset($wpq->query_vars['count_total'] ) && $wpq->query_vars['count_total'] ) {
+        $wpq->query_vars['count_total'] = false;
+        $wpq->query_vars['run_count'] = true;
+    }
+} );
+
+/**
+ * Here we have the `wp_user_query` object containing the generated sql query
+ * We hook to this action to run our own `count` on the table depending on the value
+ * of our custom `query_vars` attribute from above.
+ * We run the extra query on the db and store it in the class variable `total_users`
+ */
+add_action( 'pre_user_query', function($wpq) {
+    global $wpdb;
+    if ( isset($wpq->query_vars['run_count']) && $wpq->query_vars['run_count'] ) {
+        unset($wpq->query_vars['run_count']);
+        $sql = "SELECT COUNT(*) $wpq->query_from $wpq->query_where";
+        $wpq->total_users = $wpdb->get_var( $sql );
+    }
+} );
+
+
 
 
 function lf_profile_header($args) {
@@ -396,14 +419,14 @@ function theme_gsap_script() {
 
     wp_enqueue_script('custom-js', '/wp-content/themes/Avada-Child-Theme/assets/js/custom-js.js', array(), false, true);
     wp_localize_script( 'custom-js', 'my_ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-    
+
     //localize
     if(function_exists('um_user_profile_url')) {
-        wp_localize_script( 'custom-js', 'um_var', array( 
+        wp_localize_script( 'custom-js', 'um_var', array(
                 'um_user_profile_url' => um_user_profile_url(),
             ));
     }
-    
+
     /* bootstrap fix
      * somehow the avada theme calls it twice
      * one min one not min
@@ -592,10 +615,16 @@ if(isset($_GET['jatts']) && $_GET['jatts']){
     $users = $_GET['jatts'];
 }
 
+$cache_time = 3600 * 24;
 
 //$page = $limit * $page;
+if(!wp_cache_get('collection_data_admin')) {
+    $admin = new WP_User_Query( array( 'role' => 'Administrator' ) );
+    wp_cache_add('collection_data_admin', $admin, '', $cache_time);
+} else {
+    $admin = wp_cache_get('collection_data_admin');
+}
 
-$admin = new WP_User_Query( array( 'role' => 'Administrator' ) );
 $admin = $admin->results['0']->ID;
 $users = str_replace("build",$admin, $users);
 $asst = get_stylesheet_directory_uri();
@@ -612,8 +641,12 @@ if(!is_null($users)){
 }
 
 $search_list    = array();
-
-$user_query = new WP_User_Query( $args );
+if(!wp_cache_get('collection_data')) {
+    $user_query = new WP_User_Query( $args );
+    wp_cache_add('collection_data', $user_query, '', $cache_time);
+} else {
+    $user_query = wp_cache_get('collection_data');
+}
 $content = "";
 // User Loop
 if (!empty($user_query->results)) {
@@ -815,7 +848,7 @@ function swph_ultimatemember($atts = array(), $content = ""){
                 $args['include'] = $user_ids;
                 $args['orderby'] = 'include';
                 $args['order'] = 'ASC';
-                
+
             } else {
 				$args['orderby'] = 'include';
                 $args['order'] = 'ASC';
@@ -1707,7 +1740,7 @@ function update_old_statuses()
     $files = [
         'members-202109.csv',
     ];
-    
+
     foreach ($files as $file) {
         $handle = fopen($upload_dir['basedir'] . '/' . $file, 'r');
         if (!$handle) {
@@ -1841,7 +1874,7 @@ function add_extra_entries_test(){
             update_user_meta($user_id, 'extra_img_1', $new_extra_img);
             $new_extra_entry_imgs = get_user_meta($user_id, 'extra_img_1', true);
             echo '<p> new extra_entry_imgs = '.$new_extra_entry_imgs.'</p>';
-           
+
 
 
         }
@@ -1900,7 +1933,7 @@ function domylfpop_shortcode() {
                     </div>
                   </div>
                 </div>
-                
+
             <?php
         }
     return ob_get_clean();
@@ -2037,7 +2070,7 @@ function do_request_feedback() {
         <div class="request-feedback-disabled bg-black text-white">
             <p class="text-white mb0">Feedback is only open to Members. <a href="/my-lf-entrant#mylf-payment-table" class="text-white">Become a member now</a> and receive constructive comments.</p>
         </div>
-    
+
     <?php }
 
     return ob_get_clean();
@@ -3532,8 +3565,13 @@ function swph_load_more() {
     $page = $_GET['page'];
 
 
-
-    $admin = new WP_User_Query( array( 'role' => 'Administrator' ) );
+    $cache_time = 3600 * 24;
+    if(!get_transient('collection_data_admin')) {
+        $admin = new WP_User_Query( array( 'role' => 'Administrator' ) );
+        set_transient('collection_data_admin', $admin, '', $cache_time);
+    } else {
+        $admin = get_transient('collection_data_admin');
+    }
     $admin = $admin->results['0']->ID;
     $users = str_replace("build",$admin, $users);
     $asst = get_stylesheet_directory_uri();
@@ -3552,7 +3590,14 @@ function swph_load_more() {
 
     $search_list    = array();
 
-    $user_query = new WP_User_Query( $args );
+//    $user_query = new WP_User_Query( $args );
+
+    if(!get_transient('load_mores_' . $page)) {
+        $user_query = new WP_User_Query( $args );
+        set_transient('load_more_' . $page, $user_query, '', $cache_time);
+    } else {
+        $user_query = get_transient('load_more_' . $page);
+    }
 
 
     $content = "";
