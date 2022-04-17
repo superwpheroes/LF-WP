@@ -4499,15 +4499,15 @@ function lf_user_registration_remember_fields(){
             ?>
             <script type="text/javascript">
                 setTimeout(function(){
-                    document.getElementById("user_login-8383").value = '<?php echo $_POST["user_login-8383"];?>';
-                    document.getElementById("first_name-8383").value = '<?php echo $_POST["first_name-8383"];?>';
-                    document.getElementById("last_name-8383").value = '<?php echo $_POST["last_name-8383"];?>';
-                    document.getElementById("user_email-8383").value = '<?php echo $_POST["user_email-8383"];?>';
-                    document.getElementById("user_password-8383").value = '<?php echo $_POST["user_password-8383"];?>';
-                    document.getElementById("confirm_user_password-8383").value = '<?php echo $_POST["confirm_user_password-8383"];?>';
-                    document.getElementById("social_instagram-8383").value = '<?php echo $_POST["social_instagram-8383"];?>';
-                    document.getElementById("social_facebook-8383").value = '<?php echo $_POST["social_facebook-8383"];?>';
-                    document.getElementById("social_website-8383").value = '<?php echo $_POST["social_website-8383"];?>';
+                    document.getElementById("user_login-8383").value = '<?php echo htmlspecialchars($_POST["user_login-8383"]);?>';
+                    document.getElementById("first_name-8383").value = '<?php echo htmlspecialchars($_POST["first_name-8383"]);?>';
+                    document.getElementById("last_name-8383").value = '<?php echo htmlspecialchars($_POST["last_name-8383"]);?>';
+                    document.getElementById("user_email-8383").value = '<?php echo htmlspecialchars($_POST["user_email-8383"]);?>';
+                    document.getElementById("user_password-8383").value = '<?php echo htmlspecialchars($_POST["user_password-8383"]);?>';
+                    document.getElementById("confirm_user_password-8383").value = '<?php echo htmlspecialchars($_POST["confirm_user_password-8383"]);?>';
+                    document.getElementById("social_instagram-8383").value = '<?php echo htmlspecialchars($_POST["social_instagram-8383"]);?>';
+                    document.getElementById("social_facebook-8383").value = '<?php echo htmlspecialchars($_POST["social_facebook-8383"]);?>';
+                    document.getElementById("social_website-8383").value = '<?php echo htmlspecialchars($_POST["social_website-8383"]);?>';
                 }, 1000);
             </script>
         <?php
@@ -4518,15 +4518,15 @@ function lf_user_registration_remember_fields(){
                 ?>
                 <script type="text/javascript">
                     setTimeout(function(){
-                        document.getElementById("user_login-8172").value = '<?php echo $_POST["user_login-8172"];?>';
-                        document.getElementById("first_name-8172").value = '<?php echo $_POST["first_name-8172"];?>';
-                        document.getElementById("last_name-8172").value = '<?php echo $_POST["last_name-8172"];?>';
-                        document.getElementById("user_email-8172").value = '<?php echo $_POST["user_email-8172"];?>';
-                        document.getElementById("user_password-8172").value = '<?php echo $_POST["user_password-8172"];?>';
-                        document.getElementById("confirm_user_password-8172").value = '<?php echo $_POST["confirm_user_password-8172"];?>';
-                        document.getElementById("social_instagram-8172").value = '<?php echo $_POST["social_instagram-8172"];?>';
-                        document.getElementById("social_facebook-8172").value = '<?php echo $_POST["social_facebook-8172"];?>';
-                        document.getElementById("social_website-8172").value = '<?php echo $_POST["social_website-8172"];?>';
+                        document.getElementById("user_login-8172").value = '<?php echo htmlspecialchars($_POST["user_login-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("first_name-8172").value = '<?php echo htmlspecialchars($_POST["first_name-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("last_name-8172").value = '<?php echo htmlspecialchars($_POST["last_name-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("user_email-8172").value = '<?php echo htmlspecialchars($_POST["user_email-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("user_password-8172").value = '<?php echo htmlspecialchars($_POST["user_password-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("confirm_user_password-8172").value = '<?php echo htmlspecialchars($_POST["confirm_user_password-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("social_instagram-8172").value = '<?php echo htmlspecialchars($_POST["social_instagram-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("social_facebook-8172").value = '<?php echo htmlspecialchars($_POST["social_facebook-8172"], ENT_QUOTES, 'UTF-8');?>';
+                        document.getElementById("social_website-8172").value = '<?php echo htmlspecialchars($_POST["social_website-8172"], ENT_QUOTES, 'UTF-8');?>';
                     }, 1000);
                 </script>
             <?php
