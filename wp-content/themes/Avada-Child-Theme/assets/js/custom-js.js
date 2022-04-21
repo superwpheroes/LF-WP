@@ -419,26 +419,32 @@ $(window).resize(function() {
 //	$('#loadmore').attr( 'data-page' , page + 1 );
 //
 //});
-const title = $("<span></span>");
-title.css({
-	'position': 'absolute',
-	'bottom': '0',
-	'right': '0',
-	'background-color': 'black',
-	'color': 'white',
-	'display': 'block',
-	'padding': '10px'
-})
 $('.hover-text-img').parent().css('position', 'relative')
 $('.hover-text-img').parent().parent().css('display', 'flex')
 $('.hover-text-img').css('backface-visibility', 'hidden')
-$('.hover-text-img').mouseenter(function() {
+
+$('.hover-text-img').each(function() {
+	const title = $("<span></span>");
+	title.css({
+		'position': 'absolute',
+		'bottom': '0',
+		'right': '0',
+		'background-color': 'black',
+		'color': 'white',
+		'display': 'none',
+		'padding': '10px',
+		'font-size': '11px',
+	})
 	title.text($(this).attr('title').toUpperCase())
 	$(this).parent().append(title);
-	title.fadeIn('slow')
 })
-$('.hover-text-img').mouseleave(function() {
-	title.fadeOut('slow')
+$('.hover-text-img').hover(function() {
+	$(this).next().fadeIn()
+	$(this).data('originalTitle',$(this).attr('title'));
+	$(this).removeAttr('title');
+}, function() {
+	$(this).next().fadeOut()
+	$(this).attr('title',$(this).data('originalTitle'));
 })
 $('body').on('click', '#loadmore', function () {
 	var page = parseInt($(this).attr('data-page')) + 1;
