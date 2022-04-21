@@ -36,6 +36,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 */
 			?>
 			<?php if ( ! is_page_template( 'blank.php' ) ) : ?>
+
+                <?php
+                if ( has_action( 'avada_render_footer' ) ) {
+                    do_action( 'avada_render_footer' );
+                } else {
+                    Avada()->template->render_footer();
+                }
+                ?>
 				<?php $footer_parallax_class = ( 'footer_parallax_effect' == Avada()->settings->get( 'footer_special_effects' ) ) ? ' fusion-footer-parallax' : ''; ?>
 
 				<div class="fusion-footer<?php echo esc_attr( $footer_parallax_class ); ?>">
@@ -48,51 +56,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 					?>
 					<?php if ( is_single() || ( Avada()->settings->get( 'footer_widgets' ) && 'no' !== $display_footer ) || ( ! Avada()->settings->get( 'footer_widgets' ) && 'yes' === $display_footer ) ) : ?>
 						<?php $footer_widget_area_center_class = ( Avada()->settings->get( 'footer_widgets_center_content' ) ) ? ' fusion-footer-widget-area-center' : ''; ?>
-
-						<footer role="contentinfo" class="fusion-footer-widget-area fusion-widget-area<?php echo esc_attr( $footer_widget_area_center_class ); ?>">
-							<div class="fusion-row">
-								<div class="fusion-columns fusion-columns-<?php echo esc_attr( Avada()->settings->get( 'footer_widgets_columns' ) ); ?> fusion-widget-area">
-									<?php
-									/**
-									 * Check the column width based on the amount of columns chosen in Theme Options.
-									 */
-									$footer_widget_columns = Avada()->settings->get( 'footer_widgets_columns' );
-									$footer_widget_columns = ( ! $footer_widget_columns ) ? 1 : $footer_widget_columns;
-									$column_width = ( '5' == Avada()->settings->get( 'footer_widgets_columns' ) ) ? 2 : 12 / $footer_widget_columns;
-									?>
-
-									<?php
-									/**
-									 * Render as many widget columns as have been chosen in Theme Options.
-									 */
-									?>
-									<?php for ( $i = 1; $i < 7; $i++ ) : ?>
-										<?php if ( $i <= Avada()->settings->get( 'footer_widgets_columns' ) ) : ?>
-											<div class="fusion-column<?php echo ( Avada()->settings->get( 'footer_widgets_columns' ) == $i ) ? ' fusion-column-last' : ''; ?> col-lg-<?php echo esc_attr( $column_width ); ?> col-md-<?php echo esc_attr( $column_width ); ?> col-sm-<?php echo esc_attr( $column_width ); ?>">
-												<?php if ( function_exists( 'dynamic_sidebar' ) && dynamic_sidebar( 'avada-footer-widget-' . $i ) ) : ?>
-													<?php
-													/**
-													 * All is good, dynamic_sidebar() already called the rendering.
-													 */
-													?>
-												<?php endif; ?>
-											</div>
-										<?php endif; ?>
-									<?php endfor; ?>
-
-									<div class="fusion-clearfix"></div>
-								</div> <!-- fusion-columns -->
-							</div> <!-- fusion-row -->
-							<div class="fusion-row">
-								<div class="fusion-columns">
-									<div class="footer-copyright-text">
-										<?php
-											do_action( 'avada_footer_copyright_content' );
-										?>
-									</div>
-								</div>
-							</div>
-						</footer> <!-- fusion-footer-widget-area -->
 					<?php endif; // End footer wigets check. ?>
 
 					<?php
