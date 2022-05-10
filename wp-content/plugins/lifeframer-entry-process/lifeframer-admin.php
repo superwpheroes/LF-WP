@@ -1065,26 +1065,23 @@ function export_members_to_excel(){
         users.ID,
         users.user_email,
         users.user_registered,
-        usermeta.meta_value as role,
         usermeta2.meta_value as first_name,
         usermeta3.meta_value as last_name,
+        usermeta4.meta_value as roles,
         max(payments.date) as last_payment,
         payments.date as date_payment,
-        payments.amount as payment_amount,
-        entry.role as user_role
+        payments.amount as payment_amount
 
         FROM {$wpdb->prefix}users AS users
-        LEFT JOIN {$wpdb->prefix}usermeta AS usermeta
-        ON (users.ID = usermeta.user_id AND usermeta.meta_key = 'role') 
         LEFT JOIN {$wpdb->prefix}usermeta AS usermeta2
         ON (users.ID = usermeta2.user_id AND usermeta2.meta_key='first_name')
         LEFT JOIN {$wpdb->prefix}usermeta AS usermeta3
         ON (users.ID = usermeta3.user_id AND usermeta3.meta_key='last_name')
+        LEFT JOIN {$wpdb->prefix}usermeta AS usermeta4
+        ON (users.ID = usermeta4.user_id AND usermeta4.meta_key='{$wpdb->prefix}capabilities')
         INNER JOIN  {$wpdb->prefix}lf_payments AS payments
         ON users.user_email = payments.email_address
-        INNER JOIN {$wpdb->prefix}lf_entry AS entry
-        ON users.user_email = entry.email_address
-
+        
         WHERE payments.id IN (SELECT max(payments2.id) from {$wpdb->prefix}lf_payments AS payments2 GROUP BY email_address)
         AND ".$where."
         GROUP BY users.user_email
@@ -1147,6 +1144,9 @@ function export_members_to_excel(){
 
     $currentRow = 2;
     foreach ($users as $user) {
+
+
+
 //         $user_email = $user['user_email'];
 //         $wp_user = $wpdb->get_results("SELECT role FROM wrd_lf_entry WHERE email_address = '$user_email'");
 
@@ -1154,12 +1154,24 @@ function export_members_to_excel(){
 //        if($wp_user[0]->role == 'um_entrant') $role = 'entrant';
         // Values
         // id, payment_ref, date, description, amount, name,email_address,wp_user
+
+
+        $site_role = 'past';
+        $ultimate_member_role = null;
+
+        $user['roles'] = maybe_unserialize($user['roles']);
+        $index = 0;
+        foreach($user['roles'] as $key => $value) {
+            if($index == 0) $site_role = $key;
+            else if($index == 1) $ultimate_member_role = $key;
+            $index++;
+        }
         $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('A' . $currentRow, ($user['first_name'] ? $user['first_name'] : ''))
             ->setCellValue('B' . $currentRow, ($user['last_name'] ? $user['last_name'] : ''))
             ->setCellValue('C' . $currentRow, $user['user_email'])
             ->setCellValue('D' . $currentRow, $user['user_registered'])
-            ->setCellValue('E' . $currentRow, ($user['role'] ?? ($user['user_role'] ?? 'past')))
+            ->setCellValue('E' . $currentRow, $ultimate_member_role ?? $site_role)
             ->setCellValue('F' . $currentRow, $user['last_payment'])
             ->setCellValue('G' . $currentRow, $user['payment_amount']);
         $currentRow++;
