@@ -419,7 +419,34 @@ $(window).resize(function() {
 //	$('#loadmore').attr( 'data-page' , page + 1 );
 //
 //});
+const title = $("<span></span>");
+title.css({
+	'position': 'absolute',
+	'bottom': '0',
+	'right': '0',
+	'background-color': 'black',
+	'color': 'white',
+	'display': 'none',
+	'padding': '10px'
+})
+$('.hover-text-img').parent().css('position', 'relative')
+$('.hover-text-img').parent().parent().css('display', 'flex')
+$('.hover-text-img').css('backface-visibility', 'hidden')
 
+
+$('.hover-text-img').mouseenter(function() {
+	title.text($(this).attr('title').toUpperCase())
+	$(this).parent().append(title);
+	title.stop().fadeIn('slow')
+})
+$('.hover-text-img').mouseleave(function() {
+	if(!title.is(':hover')) {
+		title.stop().fadeOut('slow')
+	}
+})
+title.mouseleave(function() {
+	title.stop().fadeOut('slow')
+})
 $('body').on('click', '#loadmore', function () {
 	var page = parseInt($(this).attr('data-page')) + 1;
 	var users = JSON.parse($(this).attr('data-users'));

@@ -585,7 +585,7 @@ function export_theme_entries_to_excel_new(){
     {
        $c[$x[$mergeId]] = isset($c[$x[$mergeId]])
           ?array_combine(
-              $z=array_keys($c[$x[$mergeId]]), 
+              $z=array_keys($c[$x[$mergeId]]),
               array_map(function($y) use ($x, $c, $mergeId)
               {
                  return in_array($x[$y], (array)$c[$x[$mergeId]][$y])
@@ -654,7 +654,7 @@ function export_theme_entries_to_excel_new(){
             if($instagram!='' && strpos($instagram, 'instagram.com') === false) {
                 $instagram = 'https://www.instagram.com/'.$instagram;
             }
-     
+
             if($facebook!='' && strpos($facebook, 'facebook.com') === false) {
                 $facebook = 'https://www.facebook.com/'.$facebook;
             }
@@ -1065,23 +1065,23 @@ function export_members_to_excel(){
         users.ID,
         users.user_email,
         users.user_registered,
-        usermeta.meta_value as role,
         usermeta2.meta_value as first_name,
         usermeta3.meta_value as last_name,
+        usermeta4.meta_value as roles,
         max(payments.date) as last_payment,
         payments.date as date_payment,
-        payments.amount as payment_amount       
+        payments.amount as payment_amount
 
         FROM {$wpdb->prefix}users AS users
-        LEFT JOIN {$wpdb->prefix}usermeta AS usermeta
-        ON (users.ID = usermeta.user_id AND usermeta.meta_key = 'role') 
         LEFT JOIN {$wpdb->prefix}usermeta AS usermeta2
         ON (users.ID = usermeta2.user_id AND usermeta2.meta_key='first_name')
         LEFT JOIN {$wpdb->prefix}usermeta AS usermeta3
         ON (users.ID = usermeta3.user_id AND usermeta3.meta_key='last_name')
+        LEFT JOIN {$wpdb->prefix}usermeta AS usermeta4
+        ON (users.ID = usermeta4.user_id AND usermeta4.meta_key='{$wpdb->prefix}capabilities')
         INNER JOIN  {$wpdb->prefix}lf_payments AS payments
         ON users.user_email = payments.email_address
-
+        
         WHERE payments.id IN (SELECT max(payments2.id) from {$wpdb->prefix}lf_payments AS payments2 GROUP BY email_address)
         AND ".$where."
         GROUP BY users.user_email
@@ -1144,24 +1144,34 @@ function export_members_to_excel(){
 
     $currentRow = 2;
     foreach ($users as $user) {
-        // $wp_user = $wpdb->get_results("SELECT * FROM wrd_users WHERE user_email = '$entry->email_address'");
-        // if($entry->role == ''){
-        //     $entry->role = 'past';
-        // }
-        // if(!isset($wp_user[0])){
-        //     continue;
-        // }
-        // $wp_user_meta = get_user_meta($wp_user[0]->ID);
 
 
+
+//         $user_email = $user['user_email'];
+//         $wp_user = $wpdb->get_results("SELECT role FROM wrd_lf_entry WHERE email_address = '$user_email'");
+
+//        if($wp_user[0]->role == 'um_member') $role = 'member';
+//        if($wp_user[0]->role == 'um_entrant') $role = 'entrant';
         // Values
         // id, payment_ref, date, description, amount, name,email_address,wp_user
+
+
+        $site_role = 'past';
+        $ultimate_member_role = null;
+
+        $user['roles'] = maybe_unserialize($user['roles']);
+        $index = 0;
+        foreach($user['roles'] as $key => $value) {
+            if($index == 0) $site_role = $key;
+            else if($index == 1) $ultimate_member_role = $key;
+            $index++;
+        }
         $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('A' . $currentRow, ($user['first_name'] ? $user['first_name'] : ''))
             ->setCellValue('B' . $currentRow, ($user['last_name'] ? $user['last_name'] : ''))
             ->setCellValue('C' . $currentRow, $user['user_email'])
             ->setCellValue('D' . $currentRow, $user['user_registered'])
-            ->setCellValue('E' . $currentRow, ($user['role'] ? $user['role'] : 'no role currently'))
+            ->setCellValue('E' . $currentRow, $ultimate_member_role ?? $site_role)
             ->setCellValue('F' . $currentRow, $user['last_payment'])
             ->setCellValue('G' . $currentRow, $user['payment_amount']);
         $currentRow++;
